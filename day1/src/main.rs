@@ -10,14 +10,14 @@ fn load_file(filename: &str) -> Vec<i64> {
     fs::read_to_string(filename).expect("Reading file failed").lines().map(|x| x.parse::<i64>().expect("Failed to convert string to i64")).collect()
 }
 
-fn calculate_fuel(mass: i64) -> Some(i64) {
-    max(0, mass / 3 - 2);
+fn calculate_fuel(mass: i64) -> i64 {
+    max(0, mass / 3 - 2)
 }
 
 // Return the output of calculate_fuel, but as an Option, Some(x) if x > 0 else None
 // This makes doing calculate_fuel_fuel easier because it will stop on None
-fn calculate_fuel_fuel_helper(mass: i64) -> Some(i64) {
-    let val = calculate_fuel(mass)
+fn calculate_fuel_fuel_helper(mass: i64) -> Option<i64> {
+    let val = calculate_fuel(mass);
     if val > 0 {
         Some(val)
     } else {
@@ -28,7 +28,7 @@ fn calculate_fuel_fuel_helper(mass: i64) -> Some(i64) {
 // This calculates the fuel needed for the mass + the fuel needed for the fuel as is required for
 // part 2
 fn calculate_fuel_fuel(mass: i64) -> i64 {
-    successors(calculate_fuel_helper(mass), |&x| calculate_fuel_helper(x)).fold(0, |sum, x| sum + x)
+    successors(calculate_fuel_fuel_helper(mass), |&x| calculate_fuel_fuel_helper(x)).fold(0, |sum, x| sum + x)
 }
 
 fn main() {
