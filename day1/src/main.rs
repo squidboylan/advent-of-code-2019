@@ -3,11 +3,12 @@ use std::env;
 use std::cmp::max;
 use std::iter::successors;
 
-// It would be cool if this could just return an iterator (Map) instead of
-// collecting the results, but alas my rust-foo is lacking and i cannot
-// appease the type and borrow checker
-fn load_file(filename: &str) -> Vec<i64> {
-    fs::read_to_string(filename).expect("Reading file failed").lines().map(|x| x.parse::<i64>().expect("Failed to convert string to i64")).collect()
+fn load_input(filename: &str) -> String {
+    fs::read_to_string(filename).expect("Reading file failed")
+}
+
+fn parse_input<'a>(data: &'a str) -> impl Iterator<Item = i64> + 'a + Clone {
+    data.lines().map(|x| x.parse::<i64>().expect("Failed to convert string to i64"))
 }
 
 fn calculate_fuel(mass: i64) -> i64 {
@@ -38,12 +39,13 @@ fn main() {
     } else {
         "input".to_string()
     };
-    let input = load_file(&filename);
-    let fuel_total = input.iter().map(|&x| calculate_fuel(x)).fold(0, |sum, x| sum + x);
+    let input = load_input(&filename);
+    let parsed_input = parse_input(&input);
+    let fuel_total = parsed_input.clone().map(|x| calculate_fuel(x)).fold(0, |sum, x| sum + x);
 
     println!("Answer 1: {}", fuel_total);
 
-    let fuel_total = input.iter().map(|&x| calculate_fuel_fuel(x)).fold(0, |sum, x| sum + x);
+    let fuel_total = parsed_input.clone().map(|x| calculate_fuel_fuel(x)).fold(0, |sum, x| sum + x);
 
     println!("Answer 2: {}", fuel_total);
 }
