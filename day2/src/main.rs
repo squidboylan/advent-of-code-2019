@@ -29,7 +29,7 @@ fn main() {
     println!("part 1: {}", parsed_input[0]);
 
     // Part 2
-    'outer: loop { 
+    'outer: loop {
         for noun in 0..=99 {
             for verb in 0..=99 {
                 parsed_input = parse_input(&input).collect();
